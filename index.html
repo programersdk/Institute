@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Vision 
+         - Digital Skills Education</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #06B6D4;
+            --accent: #10B981;
+            --dark: #1E293B;
+            --light: #F8FAFC;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+         .mobile-button {
+            min-height: 44px; /* Minimum touch target size for iOS */
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .course-card {
+            transition: all 0.3s ease;
+        }
+        
+        .course-card:hover .course-icon {
+            transform: scale(1.1);
+        }
+        
+        .event-card {
+            transition: all 0.3s ease;
+        }
+        
+        .event-date {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        .testimonial-card {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-white text-lg"></i>
+                </div>
+                <span class="text-xl font-bold text-gradient">Future Vision Institute</span>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-link font-medium">Home</a>
+                <a href="#about" class="nav-link font-medium">About Us</a>
+                <a href="#courses" class="nav-link font-medium">Courses</a>
+                <a href="#events" class="nav-link font-medium">Events</a>
+                <a href="#testimonials" class="nav-link font-medium">Testimonials</a>
+                <a href="#contact" class="nav-link font-medium">Contact</a>
+            </div>
+            
+            <div class="hidden md:flex space-x-4">
+                <a href="studentportal.html" class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors">Join Now</a>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+              <div class="md:hidden">
+            <a href="studentportal.html" class="mobile-button flex items-center justify-center px-6 py-3 rounded-md bg-blue-500 hover:bg-blue-600 transition-colors text-white font-medium text-center shadow-sm">
+                Join Now
+            </a>
+        </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-600">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white py-4 px-4 shadow-lg">
+            <div class="flex flex-col space-y-4">
+                <a href="#home" class="nav-link font-medium">Home</a>
+                <a href="#about" class="nav-link font-medium">About Us</a>
+                <a href="#courses" class="nav-link font-medium">Courses</a>
+                <a href="#events" class="nav-link font-medium">Events</a>
+                <a href="#testimonials" class="nav-link font-medium">Testimonials</a>
+                <a href="#contact" class="nav-link font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="gradient-bg text-white py-20 md:py-32">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 fade-in">Future Vision Institute</h1>
+            <p class="text-xl md:text-2xl mb-10 max-w-2xl mx-auto fade-in">Empowering the next generation with cutting-edge digital skills for tomorrow's challenges</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 fade-in">
+                <a href="studentportal.html" class="px-8 py-3 bg-white text-gray-800 font-semibold rounded-lg hover-lift">Join Now</a>
+                <a href="#courses" class="px-8 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover-lift">View Courses</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 fade-in">About Future Vision Institute</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="fade-in">
+                    <p class="text-lg mb-6">At Future Vision Institute, we believe in equipping individuals with the digital skills needed to thrive in today's rapidly evolving technological landscape.</p>
+                    <p class="text-lg mb-6">Our expert instructors and industry-relevant curriculum ensure that our students gain practical, hands-on experience that translates directly to career success.</p>
+                    <div class="flex space-x-4">
+                        <div class="flex-1 bg-gray-50 p-4 rounded-lg text-center hover-lift">
+                            <i class="fas fa-users text-3xl mb-3 text-gradient"></i>
+                            <h3 class="font-bold">5000+ Students</h3>
+                        </div>
+                        <div class="flex-1 bg-gray-50 p-4 rounded-lg text-center hover-lift">
+                            <i class="fas fa-chalkboard-teacher text-3xl mb-3 text-gradient"></i>
+                            <h3 class="font-bold">Expert Instructors</h3>
+                        </div>
+                        <div class="flex-1 bg-gray-50 p-4 rounded-lg text-center hover-lift">
+                            <i class="fas fa-award text-3xl mb-3 text-gradient"></i>
+                            <h3 class="font-bold">Industry Certifications</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="fade-in">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Students learning" class="rounded-lg shadow-lg w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 fade-in">Our Courses</h2>
+            <p class="text-xl text-center text-gray-600 mb-12 max-w-2xl mx-auto fade-in">Choose from our comprehensive range of digital skills courses designed for today's job market</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Course 1 -->
+                <div class="course-card bg-white rounded-xl shadow-md overflow-hidden hover-lift fade-in">
+                    <div class="p-6">
+                        <div class="w-16 h-16 rounded-full gradient-bg flex items-center justify-center mb-4 course-icon transition-transform">
+                            <i class="fas fa-code text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Web Development</h3>
+                        <p class="text-gray-600 mb-4">Learn to build modern, responsive websites and web applications using the latest technologies.</p>
+                        <ul class="mb-6 space-y-2">
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> HTML, CSS, JavaScript</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> React & Node.js</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Database Integration</li>
+                        </ul>
+                        <a href="#" class="block w-full py-3 bg-gray-100 text-center rounded-lg font-semibold hover:bg-gray-200 transition-colors">Learn More</a>
+                    </div>
+                </div>
+                
+                <!-- Course 2 -->
+                <div class="course-card bg-white rounded-xl shadow-md overflow-hidden hover-lift fade-in">
+                    <div class="p-6">
+                        <div class="w-16 h-16 rounded-full gradient-bg flex items-center justify-center mb-4 course-icon transition-transform">
+                            <i class="fas fa-bullhorn text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Digital Marketing</h3>
+                        <p class="text-gray-600 mb-4">Master the art of digital marketing with strategies for SEO, social media, and content marketing.</p>
+                        <ul class="mb-6 space-y-2">
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> SEO & SEM Strategies</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Social Media Marketing</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Analytics & Reporting</li>
+                        </ul>
+                        <a href="#" class="block w-full py-3 bg-gray-100 text-center rounded-lg font-semibold hover:bg-gray-200 transition-colors">Learn More</a>
+                    </div>
+                </div>
+                
+                <!-- Course 3 -->
+                <div class="course-card bg-white rounded-xl shadow-md overflow-hidden hover-lift fade-in">
+                    <div class="p-6">
+                        <div class="w-16 h-16 rounded-full gradient-bg flex items-center justify-center mb-4 course-icon transition-transform">
+                            <i class="fas fa-palette text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Graphic Design</h3>
+                        <p class="text-gray-600 mb-4">Develop your creative skills with industry-standard tools for graphic design and visual communication.</p>
+                        <ul class="mb-6 space-y-2">
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Adobe Creative Suite</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> UI/UX Design Principles</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Branding & Identity</li>
+                        </ul>
+                        <a href="#" class="block w-full py-3 bg-gray-100 text-center rounded-lg font-semibold hover:bg-gray-200 transition-colors">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 fade-in">Upcoming Events</h2>
+            <p class="text-xl text-center text-gray-600 mb-12 max-w-2xl mx-auto fade-in">Join our workshops, webinars, and networking events to enhance your learning experience</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Event 1 -->
+                <div class="event-card bg-white rounded-xl shadow-md overflow-hidden hover-lift fade-in">
+                    <div class="event-date text-white p-4 text-center">
+                        <div class="text-2xl font-bold">15</div>
+                        <div class="text-lg">OCT</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Web Development Workshop</h3>
+                        <p class="text-gray-600 mb-4">Hands-on session on building responsive web applications with modern frameworks.</p>
+                        <div class="flex items-center text-gray-500 mb-4">
+                            <i class="far fa-clock mr-2"></i>
+                            <span>10:00 AM - 4:00 PM</span>
+                        </div>
+                        <a href="#" class="inline-block px-4 py-2 gradient-bg text-white rounded-lg font-semibold hover:opacity-90 transition-opacity">Register Now</a>
+                    </div>
+                </div>
+                
+                <!-- Event 2 -->
+                <div class="event-card bg-white rounded-xl shadow-md overflow-hidden hover-lift fade-in">
+                    <div class="event-date text-white p-4 text-center">
+                        <div class="text-2xl font-bold">22</div>
+                        <div class="text-lg">OCT</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Digital Marketing Masterclass</h3>
+                        <p class="text-gray-600 mb-4">Learn advanced strategies for digital marketing campaigns and analytics.</p>
+                        <div class="flex items-center text-gray-500 mb-4">
+                            <i class="far fa-clock mr-2"></i>
+                            <span>1:00 PM - 5:00 PM</span>
+                        </div>
+                        <a href="#" class="inline-block px-4 py-2 gradient-bg text-white rounded-lg font-semibold hover:opacity-90 transition-opacity">Register Now</a>
+                    </div>
+                </div>
+                
+                <!-- Event 3 -->
+                <div class="event-card bg-white rounded-xl shadow-md overflow-hidden hover-lift fade-in">
+                    <div class="event-date text-white p-4 text-center">
+                        <div class="text-2xl font-bold">05</div>
+                        <div class="text-lg">NOV</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3">Graphic Design Portfolio Review</h3>
+                        <p class="text-gray-600 mb-4">Get expert feedback on your design portfolio from industry professionals.</p>
+                        <div class="flex items-center text-gray-500 mb-4">
+                            <i class="far fa-clock mr-2"></i>
+                            <span>11:00 AM - 2:00 PM</span>
+                        </div>
+                        <a href="#" class="inline-block px-4 py-2 gradient-bg text-white rounded-lg font-semibold hover:opacity-90 transition-opacity">Register Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 fade-in">What Our Students Say</h2>
+            <p class="text-xl text-center text-gray-600 mb-12 max-w-2xl mx-auto fade-in">Hear from our alumni about their learning experiences and career successes</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-card bg-white p-6 rounded-xl shadow-md hover-lift fade-in">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Student" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Sarah Johnson</h4>
+                            <p class="text-gray-600 text-sm">Web Development Graduate</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"The Web Development course at Future Vision Institute completely transformed my career. The hands-on projects and expert guidance prepared me for real-world challenges."</p>
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="testimonial-card bg-white p-6 rounded-xl shadow-md hover-lift fade-in">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Student" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Michael Chen</h4>
+                            <p class="text-gray-600 text-sm">Digital Marketing Graduate</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"The Digital Marketing program gave me practical skills that I applied immediately in my job. The instructors were industry experts who provided valuable insights."</p>
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="testimonial-card bg-white p-6 rounded-xl shadow-md hover-lift fade-in">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Student" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Jessica Martinez</h4>
+                            <p class="text-gray-600 text-sm">Graphic Design Graduate</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"The Graphic Design course helped me build a strong portfolio that landed me my dream job. The curriculum was comprehensive and the feedback from instructors was invaluable."</p>
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 fade-in">Get In Touch</h2>
+            <p class="text-xl text-center text-gray-600 mb-12 max-w-2xl mx-auto fade-in">Have questions about our courses? Reach out to our admissions team</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="fade-in">
+                    <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-gradient text-xl mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold">Address</h4>
+                                <p class="text-gray-600">123 Education Avenue, Tech District, City 10001</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-phone text-gradient text-xl mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold">Phone</h4>
+                                <p class="text-gray-600">+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-envelope text-gradient text-xl mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold">Email</h4>
+                                <p class="text-gray-600">info@futurevision.edu</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-clock text-gradient text-xl mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold">Office Hours</h4>
+                                <p class="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h4 class="font-bold mb-4">Follow Us</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white hover-lift">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white hover-lift">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white hover-lift">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white hover-lift">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="fade-in">
+                    <form class="bg-gray-50 p-6 rounded-xl shadow-md">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 mb-2" for="name">Full Name</label>
+                            <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 mb-2" for="email">Email Address</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 mb-2" for="course">Course Interest</label>
+                            <select id="course" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>Web Development</option>
+                                <option>Digital Marketing</option>
+                                <option>Graphic Design</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 mb-2" for="message">Message</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-3 gradient-bg text-white font-semibold rounded-lg hover:opacity-90 transition-opacity">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-white text-lg"></i>
+                        </div>
+                        <span class="text-xl font-bold">Future Vision Institute</span>
+                    </div>
+                    <p class="text-gray-400">Empowering the next generation with cutting-edge digital skills for tomorrow's challenges.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#courses" class="text-gray-400 hover:text-white transition-colors">Courses</a></li>
+                        <li><a href="#events" class="text-gray-400 hover:text-white transition-colors">Events</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">as logoin</h3>
+                    <ul class="space-y-2">
+                        <li><a href="studentportal.html" class="text-gray-400 hover:text-white transition-colors">Student Portal</a></li>
+                        <li><a href="teacher.html" class="text-gray-400 hover:text-white transition-colors">Teacher Portal</a></li>
+                        <li><a href="admine.html" class="text-gray-400 hover:text-white transition-colors">Admin Portal</a></li>
+    
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contact Info</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mr-2 mt-1"></i>
+                            <span>123 Education Avenue, Tech District</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone mr-2 mt-1"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mr-2 mt-1"></i>
+                            <span>info@futurevision.edu</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2023 Future Vision Institute. All rights reserved.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+        
+        // Fade-in animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInOnScroll = function() {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        };
+        
+        // Check on load
+        window.addEventListener('load', fadeInOnScroll);
+        // Check on scroll
+        window.addEventListener('scroll', fadeInOnScroll);
+    </script>
+</body>
+</html>

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - Future Vision Institute</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary: #34a853;
+            --accent: #fbbc04;
+            --danger: #ea4335;
+            --light: #f8f9fa;
+            --dark: #202124;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 50;
+                height: 100vh;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+            }
+            
+            .overlay.active {
+                display: block;
+            }
+        }
+        
+        .nav-item {
+            transition: all 0.2s ease;
+            border-radius: 0.375rem;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(26, 115, 232, 0.1);
+        }
+        
+        .nav-item.active {
+            background-color: rgba(26, 115, 232, 0.15);
+            color: var(--primary);
+        }
+        
+        .card {
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: #e0e0e0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background-color: var(--primary);
+            transition: width 0.5s ease;
+        }
+        
+        .login-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+        
+        .login-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .course-card {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .assignment-card {
+            border-left: 4px solid var(--accent);
+        }
+        
+        .notice-card {
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .attendance-present {
+            color: var(--secondary);
+        }
+        
+        .attendance-absent {
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login/Register Page -->
+    <div id="auth-page" class="login-container flex items-center justify-center p-4">
+        <div class="login-card w-full max-w-md p-8">
+            <div class="text-center mb-8">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">Future Vision Institute</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800" id="auth-title">Student Login</h2>
+                <p class="text-gray-600 mt-2">Access your courses and learning materials</p>
+            </div>
+            
+            <div id="login-form">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="login-email">Email Address</label>
+                    <input type="email" id="login-email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="student@futurevision.edu">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="login-password">Password</label>
+                    <input type="password" id="login-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your password">
+                </div>
+                <button id="login-btn" class="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors mb-4">Log In</button>
+                <div class="text-center">
+                    <p class="text-gray-600">Don't have an account? <button id="switch-to-register" class="text-blue-600 font-medium hover:underline">Register</button></p>
+                </div>
+            </div>
+            
+            <div id="register-form" class="hidden">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="register-name">Full Name</label>
+                    <input type="text" id="register-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="John Doe">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="register-email">Email Address</label>
+                    <input type="email" id="register-email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="student@futurevision.edu">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="register-password">Password</label>
+                    <input type="password" id="register-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Create a password">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="register-confirm">Confirm Password</label>
+                    <input type="password" id="register-confirm" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Confirm your password">
+                </div>
+                <button id="register-btn" class="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors mb-4">Create Account</button>
+                <div class="text-center">
+                    <p class="text-gray-600">Already have an account? <button id="switch-to-login" class="text-blue-600 font-medium hover:underline">Log In</button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard (Initially Hidden) -->
+    <div id="dashboard" class="hidden">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <button id="menu-toggle" class="md:hidden text-gray-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800 hidden md:block">Student Portal</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button class="p-2 rounded-full hover:bg-gray-100">
+                        <i class="fas fa-bell text-gray-600"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span class="text-blue-600 font-medium" id="user-initial">S</span>
+                    </div>
+                    <span class="text-gray-700 font-medium hidden md:block" id="user-name">Student</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex">
+            <!-- Sidebar -->
+            <div class="sidebar bg-white w-64 min-h-screen shadow-sm py-6">
+                <nav class="px-4 space-y-2">
+                    <a href="#" data-page="home" class="nav-item active flex items-center space-x-3 py-3 px-4 text-gray-700">
+                        <i class="fas fa-home w-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" data-page="courses" class="nav-item flex items-center space-x-3 py-3 px-4 text-gray-700">
+                        <i class="fas fa-book-open w-5"></i>
+                        <span>My Courses</span>
+                    </a>
+                    <a href="#" data-page="assignments" class="nav-item flex items-center space-x-3 py-3 px-4 text-gray-700">
+                        <i class="fas fa-tasks w-5"></i>
+                        <span>Assignments</span>
+                    </a>
+                    <a href="#" data-page="attendance" class="nav-item flex items-center space-x-3 py-3 px-4 text-gray-700">
+                        <i class="fas fa-calendar-check w-5"></i>
+                        <span>Attendance</span>
+                    </a>
+                    <a href="#" data-page="profile" class="nav-item flex items-center space-x-3 py-3 px-4 text-gray-700">
+                        <i class="fas fa-user w-5"></i>
+                        <span>Profile</span>
+                    </a>
+                    <div class="pt-8 mt-8 border-t border-gray-200">
+                        <button id="logout-btn" class="nav-item flex items-center space-x-3 py-3 px-4 text-gray-700 w-full text-left">
+                            <i class="fas fa-sign-out-alt w-5"></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Mobile Overlay -->
+            <div id="overlay" class="overlay"></div>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-6">
+                <!-- Home/Dashboard Page -->
+                <div id="home-page" class="page-content">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">Welcome back, <span id="welcome-name">Student</span>!</h1>
+                        <p class="text-gray-600">Here's your learning progress and recent activities.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-700">Enrolled Courses</h3>
+                                <i class="fas fa-book text-blue-500 text-xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800">4</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-700">Pending Assignments</h3>
+                                <i class="fas fa-tasks text-yellow-500 text-xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800">3</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-700">Attendance</h3>
+                                <i class="fas fa-calendar-check text-green-500 text-xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800">92%</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Course Progress</h3>
+                            <div class="space-y-6">
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="font-medium text-gray-700">Web Development</span>
+                                        <span class="text-gray-600">78%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="font-medium text-gray-700">Digital Marketing</span>
+                                        <span class="text-gray-600">65%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="font-medium text-gray-700">Graphic Design</span>
+                                        <span class="text-gray-600">45%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 45%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="font-medium text-gray-700">Data Analytics</span>
+                                        <span class="text-gray-600">32%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 32%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Recent Notices</h3>
+                            <div class="space-y-4">
+                                <div class="notice-card bg-blue-50 p-4 rounded-lg">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h4 class="font-medium text-gray-800">Web Development Lab Session</h4>
+                                        <span class="text-xs text-gray-500">2 hours ago</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">There will be an extra lab session on React components this Friday at 3 PM.</p>
+                                </div>
+                                <div class="notice-card bg-blue-50 p-4 rounded-lg">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h4 class="font-medium text-gray-800">Digital Marketing Assignment</h4>
+                                        <span class="text-xs text-gray-500">1 day ago</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">The deadline for the SEO strategy assignment has been extended to next Monday.</p>
+                                </div>
+                                <div class="notice-card bg-blue-50 p-4 rounded-lg">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h4 class="font-medium text-gray-800">Graphic Design Workshop</h4>
+                                        <span class="text-xs text-gray-500">2 days ago</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">Join the Adobe Illustrator workshop this Saturday. Limited seats available.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- My Courses Page -->
+                <div id="courses-page" class="page-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">My Courses</h1>
+                        <p class="text-gray-600">Access your enrolled courses and learning materials.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="course-card bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Web Development</h3>
+                                    <p class="text-gray-600 mb-4">Learn to build modern, responsive websites and web applications.</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-code text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600">Progress</span>
+                                    <span class="text-sm font-medium text-gray-700">78%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 78%"></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600 mb-4">
+                                <span>Instructor: Prof. Sarah Johnson</span>
+                                <span>Next Class: Tomorrow, 10 AM</span>
+                            </div>
+                            <button class="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">Enter Course</button>
+                        </div>
+                        
+                        <div class="course-card bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Digital Marketing</h3>
+                                    <p class="text-gray-600 mb-4">Master SEO, social media marketing, and analytics strategies.</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-bullhorn text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600">Progress</span>
+                                    <span class="text-sm font-medium text-gray-700">65%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600 mb-4">
+                                <span>Instructor: Prof. Michael Chen</span>
+                                <span>Next Class: Friday, 2 PM</span>
+                            </div>
+                            <button class="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">Enter Course</button>
+                        </div>
+                        
+                        <div class="course-card bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Graphic Design</h3>
+                                    <p class="text-gray-600 mb-4">Develop creative skills with industry-standard design tools.</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-palette text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600">Progress</span>
+                                    <span class="text-sm font-medium text-gray-700">45%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 45%"></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600 mb-4">
+                                <span>Instructor: Prof. Jessica Martinez</span>
+                                <span>Next Class: Monday, 11 AM</span>
+                            </div>
+                            <button class="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">Enter Course</button>
+                        </div>
+                        
+                        <div class="course-card bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Data Analytics</h3>
+                                    <p class="text-gray-600 mb-4">Learn to analyze and visualize data for business insights.</p>
+                                </div>
+                                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-chart-bar text-orange-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600">Progress</span>
+                                    <span class="text-sm font-medium text-gray-700">32%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 32%"></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600 mb-4">
+                                <span>Instructor: Prof. David Wilson</span>
+                                <span>Next Class: Wednesday, 1 PM</span>
+                            </div>
+                            <button class="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">Enter Course</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Assignments Page -->
+                <div id="assignments-page" class="page-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">Assignments</h1>
+                        <p class="text-gray-600">View and submit your course assignments.</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+                        <div class="border-b border-gray-200">
+                            <div class="flex">
+                                <button class="px-6 py-4 border-b-2 border-blue-600 text-blue-600 font-medium">Pending</button>
+                                <button class="px-6 py-4 text-gray-600 font-medium">Submitted</button>
+                                <button class="px-6 py-4 text-gray-600 font-medium">Graded</button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="assignment-card bg-yellow-50 p-4 rounded-lg mb-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h3 class="font-bold text-gray-800 mb-1">Web Development: React Component Library</h3>
+                                        <p class="text-sm text-gray-600 mb-2">Create a reusable component library with at least 5 different components.</p>
+                                    </div>
+                                    <span class="text-xs font-medium bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Due: Oct 25</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Web Development • Prof. Sarah Johnson</span>
+                                    <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">Submit Work</button>
+                                </div>
+                            </div>
+                            
+                            <div class="assignment-card bg-yellow-50 p-4 rounded-lg mb-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h3 class="font-bold text-gray-800 mb-1">Digital Marketing: SEO Strategy</h3>
+                                        <p class="text-sm text-gray-600 mb-2">Develop an SEO strategy for a local business including keyword research and on-page optimization.</p>
+                                    </div>
+                                    <span class="text-xs font-medium bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Due: Oct 28</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Digital Marketing • Prof. Michael Chen</span>
+                                    <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">Submit Work</button>
+                                </div>
+                            </div>
+                            
+                            <div class="assignment-card bg-yellow-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h3 class="font-bold text-gray-800 mb-1">Graphic Design: Brand Identity</h3>
+                                        <p class="text-sm text-gray-600 mb-2">Create a complete brand identity including logo, color palette, and typography for a fictional company.</p>
+                                    </div>
+                                    <span class="text-xs font-medium bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Due: Nov 2</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Graphic Design • Prof. Jessica Martinez</span>
+                                    <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">Submit Work</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attendance Page -->
+                <div id="attendance-page" class="page-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">Attendance</h1>
+                        <p class="text-gray-600">Track your class attendance records.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Attendance Overview</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="border-b border-gray-200">
+                                            <th class="text-left py-3 text-gray-700 font-medium">Course</th>
+                                            <th class="text-left py-3 text-gray-700 font-medium">Present</th>
+                                            <th class="text-left py-3 text-gray-700 font-medium">Absent</th>
+                                            <th class="text-left py-3 text-gray-700 font-medium">Percentage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-gray-100">
+                                            <td class="py-3 text-gray-700">Web Development</td>
+                                            <td class="py-3 attendance-present font-medium">18</td>
+                                            <td class="py-3 attendance-absent font-medium">2</td>
+                                            <td class="py-3 font-medium">90%</td>
+                                        </tr>
+                                        <tr class="border-b border-gray-100">
+                                            <td class="py-3 text-gray-700">Digital Marketing</td>
+                                            <td class="py-3 attendance-present font-medium">16</td>
+                                            <td class="py-3 attendance-absent font-medium">4</td>
+                                            <td class="py-3 font-medium">80%</td>
+                                        </tr>
+                                        <tr class="border-b border-gray-100">
+                                            <td class="py-3 text-gray-700">Graphic Design</td>
+                                            <td class="py-3 attendance-present font-medium">19</td>
+                                            <td class="py-3 attendance-absent font-medium">1</td>
+                                            <td class="py-3 font-medium">95%</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-3 text-gray-700">Data Analytics</td>
+                                            <td class="py-3 attendance-present font-medium">17</td>
+                                            <td class="py-3 attendance-absent font-medium">3</td>
+                                            <td class="py-3 font-medium">85%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Recent Attendance</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Web Development</p>
+                                        <p class="text-sm text-gray-600">Oct 20, 2023 • 10:00 AM</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium">Present</span>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Digital Marketing</p>
+                                        <p class="text-sm text-gray-600">Oct 19, 2023 • 2:00 PM</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium">Present</span>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Graphic Design</p>
+                                        <p class="text-sm text-gray-600">Oct 18, 2023 • 11:00 AM</p>
+                                    </div>
+                                    <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm font-medium">Absent</span>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Data Analytics</p>
+                                        <p class="text-sm text-gray-600">Oct 17, 2023 • 1:00 PM</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium">Present</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Page -->
+                <div id="profile-page" class="page-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">My Profile</h1>
+                        <p class="text-gray-600">Manage your account information and settings.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Personal Information</h3>
+                            <form>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="profile-name">Full Name</label>
+                                        <input type="text" id="profile-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="John Student">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="profile-email">Email Address</label>
+                                        <input type="email" id="profile-email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="john.student@futurevision.edu">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="profile-phone">Phone Number</label>
+                                        <input type="tel" id="profile-phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="+1 (555) 123-4567">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2" for="profile-dob">Date of Birth</label>
+                                        <input type="date" id="profile-dob" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="2000-05-15">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label class="block text-gray-700 text-sm font-medium mb-2" for="profile-address">Address</label>
+                                    <textarea id="profile-address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3">123 Student Avenue, Education City, EC 10001</textarea>
+                                </div>
+                                
+                                <button type="button" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">Save Changes</button>
+                            </form>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Account Settings</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 border border-gray-200 rounded-lg">
+                                    <h4 class="font-medium text-gray-800 mb-2">Change Password</h4>
+                                    <p class="text-sm text-gray-600 mb-3">Update your password regularly to keep your account secure.</p>
+                                    <button class="text-sm text-blue-600 font-medium hover:underline">Change Password</button>
+                                </div>
+                                
+                                <div class="p-4 border border-gray-200 rounded-lg">
+                                    <h4 class="font-medium text-gray-800 mb-2">Notification Preferences</h4>
+                                    <p class="text-sm text-gray-600 mb-3">Manage how you receive notifications about courses and assignments.</p>
+                                    <button class="text-sm text-blue-600 font-medium hover:underline">Manage Notifications</button>
+                                </div>
+                                
+                                <div class="p-4 border border-gray-200 rounded-lg">
+                                    <h4 class="font-medium text-gray-800 mb-2">Privacy Settings</h4>
+                                    <p class="text-sm text-gray-600 mb-3">Control your privacy and data sharing preferences.</p>
+                                    <button class="text-sm text-blue-600 font-medium hover:underline">Privacy Settings</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const authPage = document.getElementById('auth-page');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const authTitle = document.getElementById('auth-title');
+        const switchToRegister = document.getElementById('switch-to-register');
+        const switchToLogin = document.getElementById('switch-to-login');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('overlay');
+        const navItems = document.querySelectorAll('.nav-item');
+        const pageContents = document.querySelectorAll('.page-content');
+        const userName = document.getElementById('user-name');
+        const userInitial = document.getElementById('user-initial');
+        const welcomeName = document.getElementById('welcome-name');
+        const profileName = document.getElementById('profile-name');
+
+        // Switch between login and register forms
+        switchToRegister.addEventListener('click', () => {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            authTitle.textContent = 'Create Account';
+        });
+
+        switchToLogin.addEventListener('click', () => {
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            authTitle.textContent = 'Student Login';
+        });
+
+        // Login functionality
+        loginBtn.addEventListener('click', () => {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (email && password) {
+                // Simple validation - in a real app, this would connect to a backend
+                const name = email.split('@')[0];
+                const firstName = name.charAt(0).toUpperCase() + name.slice(1);
+                
+                // Update user info
+                userName.textContent = firstName;
+                userInitial.textContent = firstName.charAt(0);
+                welcomeName.textContent = firstName;
+                profileName.value = firstName + ' Student';
+                
+                // Show dashboard
+                authPage.classList.add('hidden');
+                dashboard.classList.remove('hidden');
+            } else {
+                alert('Please enter both email and password');
+            }
+        });
+
+        // Register functionality
+        registerBtn.addEventListener('click', () => {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm').value;
+            
+            if (name && email && password && confirmPassword) {
+                if (password === confirmPassword) {
+                    // Update user info
+                    const firstName = name.split(' ')[0];
+                    userName.textContent = firstName;
+                    userInitial.textContent = firstName.charAt(0);
+                    welcomeName.textContent = firstName;
+                    profileName.value = name;
+                    
+                    // Show dashboard
+                    authPage.classList.add('hidden');
+                    dashboard.classList.remove('hidden');
+                } else {
+                    alert('Passwords do not match');
+                }
+            } else {
+                alert('Please fill in all fields');
+            }
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', () => {
+            dashboard.classList.add('hidden');
+            authPage.classList.remove('hidden');
+            
+            // Reset forms
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('register-name').value = '';
+            document.getElementById('register-email').value = '';
+            document.getElementById('register-password').value = '';
+            document.getElementById('register-confirm').value = '';
+            
+            // Switch back to login form
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            authTitle.textContent = 'Student Login';
+        });
+
+        // Mobile menu toggle
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking overlay
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Navigation between pages
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active class from all nav items
+                navItems.forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+                
+                // Add active class to clicked nav item
+                item.classList.add('active');
+                
+                // Get the target page
+                const targetPage = item.getAttribute('data-page');
+                
+                // Hide all page contents
+                pageContents.forEach(page => {
+                    page.classList.add('hidden');
+                });
+                
+                // Show the target page
+                document.getElementById(`${targetPage}-page`).classList.remove('hidden');
+                
+                // Close mobile menu after navigation
+                if (window.innerWidth < 768) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize Chart.js for progress visualization (example)
+        document.addEventListener('DOMContentLoaded', function() {
+            // This is where you would initialize charts if needed
+            // For simplicity, we're using progress bars instead
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal - Future Vision Institute</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #673AB7;
+            --primary-dark: #512DA8;
+            --primary-light: #D1C4E9;
+            --secondary: #7E57C2;
+            --accent: #FF9800;
+            --light: #f8f9fa;
+            --dark: #212121;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .sidebar {
+            transition: all 0.3s ease;
+            background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 50;
+                height: 100vh;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+            }
+            
+            .overlay.active {
+                display: block;
+            }
+        }
+        
+        .nav-item {
+            transition: all 0.2s ease;
+            border-radius: 0.375rem;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .card {
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+        
+        .login-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .course-card {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .attendance-present {
+            color: #10B981;
+        }
+        
+        .attendance-absent {
+            color: #EF4444;
+        }
+        
+        .upload-area {
+            border: 2px dashed #D1C4E9;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(103, 58, 183, 0.05);
+        }
+        
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent);
+        }
+        
+        .message-unread {
+            background-color: rgba(103, 58, 183, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="auth-page" class="login-container flex items-center justify-center p-4">
+        <div class="login-card w-full max-w-md p-8">
+            <div class="text-center mb-8">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
+                        <i class="fas fa-chalkboard-teacher text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">Future Vision Institute</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Teacher Portal</h2>
+                <p class="text-gray-600 mt-2">Access your classes and teaching materials</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="login-email">Email Address</label>
+                    <input type="email" id="login-email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="teacher@futurevision.edu" value="prof.johnson@futurevision.edu">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="login-password">Password</label>
+                    <input type="password" id="login-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Enter your password" value="password123">
+                </div>
+                <button type="button" id="login-btn" class="w-full py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors mb-4">Log In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard (Initially Hidden) -->
+    <div id="dashboard" class="hidden">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <button id="menu-toggle" class="md:hidden text-gray-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
+                        <i class="fas fa-chalkboard-teacher text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800 hidden md:block">Teacher Portal</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button id="notifications-btn" class="p-2 rounded-full hover:bg-gray-100 relative">
+                        <i class="fas fa-bell text-gray-600"></i>
+                        <span class="notification-dot absolute top-1 right-1"></span>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <span class="text-purple-600 font-medium" id="user-initial">S</span>
+                    </div>
+                    <span class="text-gray-700 font-medium hidden md:block" id="user-name">Prof. Johnson</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex">
+            <!-- Sidebar -->
+            <div class="sidebar w-64 min-h-screen text-white py-6">
+                <nav class="px-4 space-y-2">
+                    <a href="#" data-page="dashboard" class="nav-item active flex items-center space-x-3 py-3 px-4 text-white">
+                        <i class="fas fa-tachometer-alt w-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" data-page="classes" class="nav-item flex items-center space-x-3 py-3 px-4 text-white">
+                        <i class="fas fa-book-open w-5"></i>
+                        <span>My Classes</span>
+                    </a>
+                    <a href="#" data-page="attendance" class="nav-item flex items-center space-x-3 py-3 px-4 text-white">
+                        <i class="fas fa-calendar-check w-5"></i>
+                        <span>Attendance</span>
+                    </a>
+                    <a href="#" data-page="uploads" class="nav-item flex items-center space-x-3 py-3 px-4 text-white">
+                        <i class="fas fa-upload w-5"></i>
+                        <span>Uploads</span>
+                    </a>
+                    <a href="#" data-page="messages" class="nav-item flex items-center space-x-3 py-3 px-4 text-white relative">
+                        <i class="fas fa-comments w-5"></i>
+                        <span>Messages</span>
+                        <span class="notification-dot absolute top-3 right-4"></span>
+                    </a>
+                    <div class="pt-8 mt-8 border-t border-purple-400">
+                        <button id="logout-btn" class="nav-item flex items-center space-x-3 py-3 px-4 text-white w-full text-left">
+                            <i class="fas fa-sign-out-alt w-5"></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Mobile Overlay -->
+            <div id="overlay" class="overlay"></div>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-6">
+                <!-- Dashboard Page -->
+                <div id="dashboard-page" class="page-content">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">Welcome, <span id="welcome-name">Prof. Johnson</span>!</h1>
+                        <p class="text-gray-600">Here's an overview of your classes and teaching activities.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-700">Active Classes</h3>
+                                <i class="fas fa-book text-purple-500 text-xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800">4</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-700">Students</h3>
+                                <i class="fas fa-users text-purple-500 text-xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800">86</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-700">Pending Grading</h3>
+                                <i class="fas fa-tasks text-purple-500 text-xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800">12</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-700">Unread Messages</h3>
+                                <i class="fas fa-comments text-purple-500 text-xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800">5</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Class Performance</h3>
+                            <div class="h-64 flex items-center justify-center">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Upcoming Deadlines</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Web Development - Project 2</p>
+                                        <p class="text-sm text-gray-600">Due: Oct 28, 2023</p>
+                                    </div>
+                                    <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm font-medium">22 submissions</span>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Digital Marketing - Case Study</p>
+                                        <p class="text-sm text-gray-600">Due: Oct 30, 2023</p>
+                                    </div>
+                                    <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm font-medium">18 submissions</span>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Graphic Design - Portfolio</p>
+                                        <p class="text-sm text-gray-600">Due: Nov 2, 2023</p>
+                                    </div>
+                                    <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm font-medium">15 submissions</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">Recent Notifications</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start p-3 bg-yellow-50 rounded-lg">
+                                <i class="fas fa-exclamation-circle text-yellow-500 mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-medium text-gray-800">System Maintenance</p>
+                                    <p class="text-sm text-gray-600">The portal will be unavailable on Sunday, Oct 29 from 2 AM to 6 AM for scheduled maintenance.</p>
+                                    <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start p-3 bg-blue-50 rounded-lg">
+                                <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-medium text-gray-800">New Feature: Analytics Dashboard</p>
+                                    <p class="text-sm text-gray-600">We've added new analytics features to help you track student performance more effectively.</p>
+                                    <p class="text-xs text-gray-500 mt-1">1 day ago</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start p-3 bg-green-50 rounded-lg">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-medium text-gray-800">Digital Marketing Materials Updated</p>
+                                    <p class="text-sm text-gray-600">The course materials for Digital Marketing have been updated with the latest industry trends.</p>
+                                    <p class="text-xs text-gray-500 mt-1">2 days ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- My Classes Page -->
+                <div id="classes-page" class="page-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">My Classes</h1>
+                        <p class="text-gray-600">Manage your courses and view student progress.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="course-card bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Web Development</h3>
+                                    <p class="text-gray-600 mb-4">CS401 - Mon/Wed 10:00 AM</p>
+                                    <div class="flex items-center text-sm text-gray-600 mb-2">
+                                        <i class="fas fa-users mr-2"></i>
+                                        <span>22 Students</span>
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <i class="fas fa-tasks mr-2"></i>
+                                        <span>3 Assignments Pending</span>
+                                    </div>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-code text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="flex-1 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors">View Class</button>
+                                <button class="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">Roster</button>
+                            </div>
+                        </div>
+                        
+                        <div class="course-card bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Digital Marketing</h3>
+                                    <p class="text-gray-600 mb-4">MK301 - Tue/Thu 2:00 PM</p>
+                                    <div class="flex items-center text-sm text-gray-600 mb-2">
+                                        <i class="fas fa-users mr-2"></i>
+                                        <span>18 Students</span>
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <i class="fas fa-tasks mr-2"></i>
+                                        <span>2 Assignments Pending</span>
+                                    </div>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-bullhorn text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="flex-1 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors">View Class</button>
+                                <button class="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">Roster</button>
+                            </div>
+                        </div>
+                        
+                        <div class="course-card bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Graphic Design</h3>
+                                    <p class="text-gray-600 mb-4">AR201 - Mon/Wed 1:00 PM</p>
+                                    <div class="flex items-center text-sm text-gray-600 mb-2">
+                                        <i class="fas fa-users mr-2"></i>
+                                        <span>15 Students</span>
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <i class="fas fa-tasks mr-2"></i>
+                                        <span>1 Assignment Pending</span>
+                                    </div>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-palette text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="flex-1 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors">View Class</button>
+                                <button class="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">Roster</button>
+                            </div>
+                        </div>
+                        
+                        <div class="course-card bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Data Analytics</h3>
+                                    <p class="text-gray-600 mb-4">CS302 - Tue/Thu 11:00 AM</p>
+                                    <div class="flex items-center text-sm text-gray-600 mb-2">
+                                        <i class="fas fa-users mr-2"></i>
+                                        <span>31 Students</span>
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <i class="fas fa-tasks mr-2"></i>
+                                        <span>6 Assignments Pending</span>
+                                    </div>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-chart-bar text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="flex-1 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors">View Class</button>
+                                <button class="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors">Roster</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">Student Progress Overview</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-3 text-gray-700 font-medium">Student</th>
+                                        <th class="text-left py-3 text-gray-700 font-medium">Web Development</th>
+                                        <th class="text-left py-3 text-gray-700 font-medium">Digital Marketing</th>
+                                        <th class="text-left py-3 text-gray-700 font-medium">Graphic Design</th>
+                                        <th class="text-left py-3 text-gray-700 font-medium">Data Analytics</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-gray-700 font-medium">Sarah Johnson</td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">92%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">88%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-sm font-medium">75%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">95%</span></td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-gray-700 font-medium">Michael Chen</td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">85%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">92%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-red-100 text-red-800 rounded text-sm font-medium">62%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">89%</span></td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-gray-700 font-medium">Jessica Martinez</td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-sm font-medium">78%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">84%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">91%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-sm font-medium">73%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 text-gray-700 font-medium">David Wilson</td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">95%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-sm font-medium">79%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">87%</span></td>
+                                        <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">94%</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attendance Page -->
+                <div id="attendance-page" class="page-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">Attendance Management</h1>
+                        <p class="text-gray-600">Mark and view student attendance records.</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">Mark Today's Attendance</h3>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="attendance-class">Select Class</label>
+                            <select id="attendance-class" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <option>Web Development (Mon/Wed 10:00 AM)</option>
+                                <option>Digital Marketing (Tue/Thu 2:00 PM)</option>
+                                <option>Graphic Design (Mon/Wed 1:00 PM)</option>
+                                <option>Data Analytics (Tue/Thu 11:00 AM)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-3 text-gray-700 font-medium">Student Name</th>
+                                        <th class="text-center py-3 text-gray-700 font-medium">Present</th>
+                                        <th class="text-center py-3 text-gray-700 font-medium">Absent</th>
+                                        <th class="text-center py-3 text-gray-700 font-medium">Late</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-gray-700">Sarah Johnson</td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-1" class="attendance-present" checked>
+                                        </td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-1" class="attendance-absent">
+                                        </td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-1" class="attendance-late">
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-gray-700">Michael Chen</td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-2" class="attendance-present" checked>
+                                        </td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-2" class="attendance-absent">
+                                        </td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-2" class="attendance-late">
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-gray-700">Jessica Martinez</td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-3" class="attendance-present">
+                                        </td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-3" class="attendance-absent" checked>
+                                        </td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-3" class="attendance-late">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 text-gray-700">David Wilson</td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-4" class="attendance-present" checked>
+                                        </td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-4" class="attendance-absent">
+                                        </td>
+                                        <td class="py-3 text-center">
+                                            <input type="radio" name="attendance-4" class="attendance-late">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-end">
+                            <button class="px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors">Save Attendance</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">Attendance Records</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-3 text-gray-700 font-medium">Date</th>
+                                        <th class="text-left py-3 text-gray-700 font-medium">Class</th>
+                                        <th class="text-left py-3 text-gray-700 font-medium">Present</th>
+                                        <th class="text-left py-3 text-gray-700 font-medium">Absent</th>
+                                        <th class="text-left py-3 text-gray-700 font-medium">Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-gray-700">Oct 23, 2023</td>
+                                        <td class="py-3 text-gray-700">Web Development</td>
+                                        <td class="py-3 attendance-present font-medium">20</td>
+                                        <td class="py-3 attendance-absent font-medium">2</td>
+                                        <td class="py-3 font-medium">91%</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-gray-700">Oct 20, 2023</td>
+                                        <td class="py-3 text-gray-700">Digital Marketing</td>
+                                        <td class="py-3 attendance-present font-medium">17</td>
+                                        <td class="py-3 attendance-absent font-medium">1</td>
+                                        <td class="py-3 font-medium">94%</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-gray-700">Oct 19, 2023</td>
+                                        <td class="py-3 text-gray-700">Graphic Design</td>
+                                        <td class="py-3 attendance-present font-medium">14</td>
+                                        <td class="py-3 attendance-absent font-medium">1</td>
+                                        <td class="py-3 font-medium">93%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 text-gray-700">Oct 18, 2023</td>
+                                        <td class="py-3 text-gray-700">Data Analytics</td>
+                                        <td class="py-3 attendance-present font-medium">29</td>
+                                        <td class="py-3 attendance-absent font-medium">2</td>
+                                        <td class="py-3 font-medium">94%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Uploads Page -->
+                <div id="uploads-page" class="page-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">Course Materials</h1>
+                        <p class="text-gray-600">Upload and manage your teaching materials.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+                                <h3 class="text-xl font-bold text-gray-800 mb-6">Upload New Material</h3>
+                                <div class="mb-6">
+                                    <label class="block text-gray-700 text-sm font-medium mb-2" for="upload-class">Select Class</label>
+                                    <select id="upload-class" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                        <option>Web Development</option>
+                                        <option>Digital Marketing</option>
+                                        <option>Graphic Design</option>
+                                        <option>Data Analytics</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label class="block text-gray-700 text-sm font-medium mb-2" for="material-title">Material Title</label>
+                                    <input type="text" id="material-title" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Enter material title">
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label class="block text-gray-700 text-sm font-medium mb-2" for="material-type">Material Type</label>
+                                    <select id="material-type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                        <option>Lecture Notes</option>
+                                        <option>Assignment</option>
+                                        <option>Reading Material</option>
+                                        <option>Video</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Upload File</label>
+                                    <div class="upload-area border-2 border-dashed rounded-lg p-8 text-center cursor-pointer">
+                                        <i class="fas fa-cloud-upload-alt text-3xl text-purple-500 mb-2"></i>
+                                        <p class="text-gray-600 mb-1">Drag and drop your files here</p>
+                                        <p class="text-gray-500 text-sm">or</p>
+                                        <button class="mt-2 px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors">Browse Files</button>
+                                        <p class="text-gray-500 text-sm mt-2">Supports: PDF, DOC, PPT, MP4, ZIP (Max 100MB)</p>
+                                    </div>
+                                </div>
+                                
+                                <button class="w-full py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">Upload Material</button>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-sm p-6">
+                                <h3 class="text-xl font-bold text-gray-800 mb-6">Recently Uploaded Materials</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-file-pdf text-red-500 text-xl mr-4"></i>
+                                            <div>
+                                                <p class="font-medium text-gray-800">React Components Lecture</p>
+                                                <p class="text-sm text-gray-600">Web Development • Oct 22, 2023</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="p-2 text-gray-500 hover:text-purple-600"><i class="fas fa-eye"></i></button>
+                                            <button class="p-2 text-gray-500 hover:text-purple-600"><i class="fas fa-download"></i></button>
+                                            <button class="p-2 text-gray-500 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-video text-purple-500 text-xl mr-4"></i>
+                                            <div>
+                                                <p class="font-medium text-gray-800">SEO Strategy Tutorial</p>
+                                                <p class="text-sm text-gray-600">Digital Marketing • Oct 20, 2023</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="p-2 text-gray-500 hover:text-purple-600"><i class="fas fa-eye"></i></button>
+                                            <button class="p-2 text-gray-500 hover:text-purple-600"><i class="fas fa-download"></i></button>
+                                            <button class="p-2 text-gray-500 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-file-word text-blue-500 text-xl mr-4"></i>
+                                            <div>
+                                                <p class="font-medium text-gray-800">Design Principles Assignment</p>
+                                                <p class="text-sm text-gray-600">Graphic Design • Oct 18, 2023</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="p-2 text-gray-500 hover:text-purple-600"><i class="fas fa-eye"></i></button>
+                                            <button class="p-2 text-gray-500 hover:text-purple-600"><i class="fas fa-download"></i></button>
+                                            <button class="p-2 text-gray-500 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Upload Statistics</h3>
+                            <div class="space-y-6">
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="font-medium text-gray-700">Web Development</span>
+                                        <span class="text-gray-600">18 files</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="font-medium text-gray-700">Digital Marketing</span>
+                                        <span class="text-gray-600">12 files</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 50%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="font-medium text-gray-700">Graphic Design</span>
+                                        <span class="text-gray-600">9 files</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 40%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="font-medium text-gray-700">Data Analytics</span>
+                                        <span class="text-gray-600">15 files</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8">
+                                <h4 class="font-bold text-gray-800 mb-4">Storage Usage</h4>
+                                <div class="bg-gray-100 p-4 rounded-lg">
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm text-gray-700">Used: 2.3 GB</span>
+                                        <span class="text-sm text-gray-700">Total: 10 GB</span>
+                                    </div>
+                                    <div class="w-full bg-gray-300 rounded-full h-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 23%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Messages Page -->
+                <div id="messages-page" class="page-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold text-gray-800 mb-2">Messages</h1>
+                        <p class="text-gray-600">Communicate with students and colleagues.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Conversations</h3>
+                            <div class="space-y-4">
+                                <div class="message-unread p-3 rounded-lg cursor-pointer">
+                                    <div class="flex items-start">
+                                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-purple-600 font-medium">SJ</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <h4 class="font-medium text-gray-800">Sarah Johnson</h4>
+                                                <span class="text-xs text-gray-500">10:24 AM</span>
+                                            </div>
+                                            <p class="text-sm text-gray-600 truncate">Hello Professor, I have a question about the React assignment...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-3 rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <div class="flex items-start">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-blue-600 font-medium">MC</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <h4 class="font-medium text-gray-800">Michael Chen</h4>
+                                                <span class="text-xs text-gray-500">Yesterday</span>
+                                            </div>
+                                            <p class="text-sm text-gray-600 truncate">Thank you for the feedback on my project!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-3 rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <div class="flex items-start">
+                                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-green-600 font-medium">JM</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <h4 class="font-medium text-gray-800">Jessica Martinez</h4>
+                                                <span class="text-xs text-gray-500">Oct 22</span>
+                                            </div>
+                                            <p class="text-sm text-gray-600 truncate">Could we schedule a meeting to discuss my portfolio?</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-3 rounded-lg cursor-pointer hover:bg-gray-50">
+                                    <div class="flex items-start">
+                                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-orange-600 font-medium">DW</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <h4 class="font-medium text-gray-800">David Wilson</h4>
+                                                <span class="text-xs text-gray-500">Oct 21</span>
+                                            </div>
+                                            <p class="text-sm text-gray-600 truncate">I'm having trouble with the data visualization exercise...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center mb-6">
+                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-purple-600 font-medium">SJ</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">Sarah Johnson</h3>
+                                    <p class="text-sm text-gray-600">Web Development Student</p>
+                                </div>
+                            </div>
+                            
+                            <div class="h-80 overflow-y-auto mb-6 space-y-4">
+                                <div class="flex justify-start">
+                                    <div class="bg-purple-100 rounded-lg p-4 max-w-xs">
+                                        <p class="text-gray-800">Hello Professor, I have a question about the React assignment. Could you clarify the requirements for the component library?</p>
+                                        <p class="text-xs text-gray-500 mt-2">10:24 AM</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end">
+                                    <div class="bg-purple-600 rounded-lg p-4 max-w-xs">
+                                        <p class="text-white">Of course, Sarah. The component library should include at least 5 reusable components with proper props and state management.</p>
+                                        <p class="text-xs text-purple-200 mt-2">10:26 AM</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-start">
+                                    <div class="bg-purple-100 rounded-lg p-4 max-w-xs">
+                                        <p class="text-gray-800">Thank you! Also, are we allowed to use third-party UI libraries for styling, or should we write our own CSS?</p>
+                                        <p class="text-xs text-gray-500 mt-2">10:27 AM</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <input type="text" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Type your message...">
+                                <button class="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const authPage = document.getElementById('auth-page');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('login-form');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('overlay');
+        const navItems = document.querySelectorAll('.nav-item');
+        const pageContents = document.querySelectorAll('.page-content');
+        const userName = document.getElementById('user-name');
+        const userInitial = document.getElementById('user-initial');
+        const welcomeName = document.getElementById('welcome-name');
+
+        // Login functionality
+        loginBtn.addEventListener('click', () => {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (email && password) {
+                // Simple validation - in a real app, this would connect to a backend
+                const name = "Prof. Johnson";
+                
+                // Update user info
+                userName.textContent = name;
+                userInitial.textContent = name.charAt(0);
+                welcomeName.textContent = name;
+                
+                // Show dashboard
+                authPage.classList.add('hidden');
+                dashboard.classList.remove('hidden');
+                
+                // Initialize chart
+                initializeChart();
+            } else {
+                alert('Please enter both email and password');
+            }
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', () => {
+            dashboard.classList.add('hidden');
+            authPage.classList.remove('hidden');
+            
+            // Reset form
+            document.getElementById('login-password').value = '';
+        });
+
+        // Mobile menu toggle
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking overlay
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Navigation between pages
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active class from all nav items
+                navItems.forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+                
+                // Add active class to clicked nav item
+                item.classList.add('active');
+                
+                // Get the target page
+                const targetPage = item.getAttribute('data-page');
+                
+                // Hide all page contents
+                pageContents.forEach(page => {
+                    page.classList.add('hidden');
+                });
+                
+                // Show the target page
+                document.getElementById(`${targetPage}-page`).classList.remove('hidden');
+                
+                // Close mobile menu after navigation
+                if (window.innerWidth < 768) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize Chart.js for performance visualization
+        function initializeChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            const performanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Web Development', 'Digital Marketing', 'Graphic Design', 'Data Analytics'],
+                    datasets: [{
+                        label: 'Average Grade',
+                        data: [78, 82, 75, 85],
+                        backgroundColor: [
+                            'rgba(103, 58, 183, 0.7)',
+                            'rgba(103, 58, 183, 0.7)',
+                            'rgba(103, 58, 183, 0.7)',
+                            'rgba(103, 58, 183, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(103, 58, 183)',
+                            'rgb(103, 58, 183)',
+                            'rgb(103, 58, 183)',
+                            'rgb(103, 58, 183)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Average: ${context.parsed.y}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // This would typically be called after login
+        });
+    </script>
+</body>
+</html>
